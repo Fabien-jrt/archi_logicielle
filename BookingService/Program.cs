@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,29 +16,36 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+const string baseDBAPIUrl = "http://localhost:8090/api/collections/";
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/get_availability", async () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    const string roomUrl = baseDBAPIUrl + "rooms/records";
+
+    using (HttpClient client = new HttpClient())
+    {
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync(roomUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<JsonElement>(content);
+            }
+            else
+            {
+                throw new HttpRequestException($"Failed to fetch data. Status code: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new HttpRequestException($"An error occurred: {ex.Message}");
+        }
+    }
 })
-.WithName("GetWeatherForecast")
+.WithName("GetAvailability")
 .WithOpenApi();
 
-app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+app.Run();
