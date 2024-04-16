@@ -71,7 +71,4 @@ app.MapGet("/get_availability", async (DateTime startDate, DateTime endDate) =>
 .WithName("GetAvailability")
 .WithOpenApi();
 
-
-
-
 app.Run();
