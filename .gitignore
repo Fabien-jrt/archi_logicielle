@@ -41,3 +41,9 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+
+# Pocketbase
+
+pb_data/*
+!pb_data/data.db
+!pb_data/types.d.ts

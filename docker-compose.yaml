@@ -15,3 +15,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  
+  booking:
+    build: 
+      context: ./BookingService
+      args:
+        ASPNOTCORE_ENVIRONMENT: Development
+    ports:
+      - "3000:8080"
