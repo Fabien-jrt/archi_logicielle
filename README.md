@@ -13,6 +13,14 @@ url: http://localhost:8090/_/
 email: `test@test.com`
 password: `testtesttest`
 
+### services
+
+#### Booking
+localhost:3000
+
+#### Cleaning
+localhost:3001
+
 ## Comments
 
 1. In this project, the schema and data are commit to the repository (sqlite), we don't do that in a real application.
